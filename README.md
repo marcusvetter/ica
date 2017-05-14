@@ -1,1 +1,1 @@
-# ica
+# ImageColorAnalyzer
