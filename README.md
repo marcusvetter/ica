@@ -2,7 +2,13 @@
 
 This tool can be used to analyze the color pixels of an image.
 
-## Usage
+## Development guide
+
+* Tested with Java/JDK 1.8.0_131
+* JavaFX used for graphical user interface
+* JUnit 4 for unit testing
+
+### Gradle tasks
 
 ```gradle jfxRun```: Start application for development
 
