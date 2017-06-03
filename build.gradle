@@ -1,0 +1,31 @@
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+        classpath files("${System.properties['java.home']}/../lib/ant-javafx.jar")
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+    }
+}
+
+apply plugin: 'java'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+apply plugin: 'javafx-gradle-plugin'
+
+
+jfx {
+    mainClass = 'de.marcusvetter.ica.Main'
+    vendor = 'Marcus Vetter'
+    jfxMainAppJarName = 'ica-latest.jar'
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
