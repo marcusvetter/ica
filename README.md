@@ -1,4 +1,4 @@
-# Image Color Analyzer / ICA
+# Image Color Analyzer
 
 This tool can be used to analyze the color pixels of an image.
 
