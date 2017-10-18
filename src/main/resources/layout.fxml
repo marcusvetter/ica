@@ -29,7 +29,7 @@
             <children>
                 <VBox prefHeight="250.0" prefWidth="320.0">
                     <children>
-                        <Button onAction="#chooseImage" prefHeight="27.0" prefWidth="400.0" style="-fx-background-color: #E0E0E0;" text="Choose your image ...">
+                        <Button onAction="#chooseImage" prefHeight="27.0" prefWidth="400.0" style="-fx-background-color: #E0E0E0;" text="Choose one or more images ...">
                             <opaqueInsets>
                                 <Insets />
                             </opaqueInsets>
@@ -60,7 +60,7 @@
         <Pane prefHeight="10.0" prefWidth="580.0" />
         <TextArea fx:id="textAreaResult" editable="false" prefHeight="181.0" prefWidth="680.0" />
       <Pane prefHeight="10.0" prefWidth="580.0" />
-      <Label prefHeight="15.0" prefWidth="680.0" text="Created 2016 by Marcus Vetter, marcus.vetter@live.com" textAlignment="CENTER" textFill="#e0e0e0">
+      <Label prefHeight="15.0" prefWidth="680.0" text="Created 2016/2017 by Marcus Vetter, marcus.vetter@live.com" textAlignment="CENTER" textFill="#e0e0e0">
          <font>
             <Font size="9.0" />
          </font>

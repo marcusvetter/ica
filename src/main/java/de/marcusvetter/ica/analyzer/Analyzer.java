@@ -15,8 +15,6 @@ public class Analyzer {
     }
 
     private boolean filterPixel(int pixel, Color color, FilterType filterType, int filterValue) {
-        //int a = (pixel >> 24) & 0xff;
-
         if (color == Color.RED) {
             int red = (pixel >> 16) & 0xff;
             return filterCondition(filterType, filterValue, red);
@@ -33,7 +31,6 @@ public class Analyzer {
         int w = image.getWidth();
         int h = image.getHeight();
         int countPixelBelowSpecified = 0;
-        System.out.println("Width: " + w + "px, Height: " + h + "px");
 
         for (int row = 0; row < h; row++) {
             for (int col = 0; col < w; col++) {

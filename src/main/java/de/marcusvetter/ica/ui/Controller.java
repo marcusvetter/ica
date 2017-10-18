@@ -20,6 +20,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
 
@@ -27,7 +29,7 @@ public class Controller {
 
     private Analyzer.Color selectedColor;
     private Analyzer.FilterType selectedFilterType;
-    private BufferedImage selectedImage;
+    private List<BufferedImage> selectedImages;
 
     @FXML
     private ChoiceBox<Analyzer.Color> choiceBoxColor;
@@ -48,43 +50,49 @@ public class Controller {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.jpg");
         fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showOpenDialog(primaryStage);
+        List<File> files = fileChooser.showOpenMultipleDialog(primaryStage);
 
-        if (file != null) {
-            Logger.log("Selected file: " + file.toURI().toString());
+        if (files != null) {
+            selectedImages = new ArrayList();
 
-            try {
-                selectedImage = ImageIO.read(file);
-                imagePreview.setImage(new Image(file.toURI().toString()));
-            } catch (IOException e) {
-                Logger.error(e.getMessage());
-            }
+            files.forEach((file) -> {
+                if (file != null) {
+                    try {
+                        selectedImages.add(ImageIO.read(file));
+                        imagePreview.setImage(new Image(file.toURI().toString()));
+                    } catch (IOException e) {
+                        Logger.error(e.getMessage());
+                    }
+                }
+            });
         }
 
     }
 
-    private int getFilterValueAsInt() {
-        String filterValue = textFieldFilterValue.getText();
-        Logger.log("Filter value: " + filterValue);
-        return filterValue.equals("") ? -1 : Integer.parseInt(filterValue);
+    private Integer getFilterValueAsInt() {
+        try {
+            return Integer.parseInt(textFieldFilterValue.getText());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private boolean isConfigurationComplete() {
-        return selectedColor != null && selectedImage != null && getFilterValueAsInt() != -1;
+        return selectedColor != null && getFilterValueAsInt() != null && selectedImages != null && selectedImages.size() > 0;
     }
 
     public void startAnalyzing() {
         if (isConfigurationComplete()) {
-
-            long startTime = System.nanoTime();
-
-            AnalyzerResult result = new Analyzer().countPixel(selectedImage,selectedColor, selectedFilterType, getFilterValueAsInt());
-
-            Logger.log(result.getFilteredPixels() + " of " + result.getAllPixels() + " (" + result.getFilteredPixelInPercent() + " %) ");
-
-            long endTime = System.nanoTime();
-
-            printResult(result, (endTime - startTime) / 1000 / 1000);
+            Logger.log("Start analyzing " + selectedImages.size() + " images with filter value: " + getFilterValueAsInt());
+            textAreaResult.clear();
+            int idx = 0;
+            for (BufferedImage image : selectedImages) {
+                AnalyzerResult result = new Analyzer().countPixel(image, selectedColor, selectedFilterType, getFilterValueAsInt());
+                printResult(result);
+                Logger.log(String.format("Image %d (%dx%d): %d of %d (%.2f%%)", idx++, image.getWidth(),
+                        image.getHeight(), result.getFilteredPixels(), result.getAllPixels(),
+                        result.getFilteredPixelInPercent()));
+            }
         }
     }
 
@@ -112,7 +120,7 @@ public class Controller {
                     selectedColor = choiceBoxColor.getItems().get((Integer) number2);
                 });
 
-        choiceBoxColor.getSelectionModel().select(Analyzer.Color.RED);
+        choiceBoxColor.getSelectionModel().select(Analyzer.Color.GREEN);
     }
 
     private void initChoiceBoxFilterType() {
@@ -126,15 +134,8 @@ public class Controller {
         choiceBoxFilterType.getSelectionModel().select(Analyzer.FilterType.LESS_THAN);
     }
 
-    private void printResult(AnalyzerResult result, long duration) {
-        textAreaResult.clear();
-        textAreaResult.appendText(String.format("Processing took %s ms", duration));
-        textAreaResult.appendText("\n");
-        textAreaResult.appendText("------------------------");
-        textAreaResult.appendText("\n");
-        textAreaResult.appendText(String.format("%s of %s", result.getFilteredPixels(), result.getAllPixels()));
-        textAreaResult.appendText("\n");
-        textAreaResult.appendText(String.format("%s %%", result.getFilteredPixelInPercent()));
+    private void printResult(AnalyzerResult result) {
+        textAreaResult.appendText(String.format("%s\t%s\n", result.getFilteredPixels(), result.getAllPixels()));
     }
 
 }
