@@ -2,15 +2,16 @@ package de.marcusvetter.ica.ui;
 
 import de.marcusvetter.ica.analyzer.Analyzer;
 import de.marcusvetter.ica.analyzer.AnalyzerResult;
+import de.marcusvetter.ica.license.Serial;
 import de.marcusvetter.ica.util.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Controller {
 
@@ -93,6 +95,8 @@ public class Controller {
                         image.getHeight(), result.getFilteredPixels(), result.getAllPixels(),
                         result.getFilteredPixelInPercent()));
             }
+
+            copyResultToClipboard();
         }
     }
 
@@ -101,6 +105,8 @@ public class Controller {
     }
 
     public void init() {
+//      Serial.checkSerialNumber();
+//      Serial.clearSerialNumber();
         initChoiceBoxColor();
         initChoiceBoxFilterType();
     }
@@ -131,11 +137,19 @@ public class Controller {
                     selectedFilterType = choiceBoxFilterType.getItems().get((Integer) number2);
                 });
 
-        choiceBoxFilterType.getSelectionModel().select(Analyzer.FilterType.LESS_THAN);
+        choiceBoxFilterType.getSelectionModel().select(Analyzer.FilterType.GREATER_THAN);
     }
 
     private void printResult(AnalyzerResult result) {
         textAreaResult.appendText(String.format("%s\t%s\n", result.getFilteredPixels(), result.getAllPixels()));
+    }
+
+    private void copyResultToClipboard() {
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        clipboard.clear();
+        content.putString(textAreaResult.getText());
+        clipboard.setContent(content);
     }
 
 }
